@@ -1,13 +1,45 @@
 import { useState } from "react";
+// can a flashcard have more than one topic?
+// can a status be "not reviewed"?
+// how to manage create edit modal?
+// can it be created more topics or just predefined?
+
+const availableTopics = [
+  "Math",
+  "Science",
+  "History",
+  "English",
+  "Programming",
+  "Art",
+  "Geography",
+];
+
+const topicColors: Record<string, { bg: string; text: string }> = {
+  Math: { bg: "bg-blue-100", text: "text-blue-700" },
+  Science: { bg: "bg-green-100", text: "text-green-700" },
+  History: { bg: "bg-yellow-100", text: "text-yellow-700" },
+  English: { bg: "bg-pink-100", text: "text-pink-700" },
+  Programming: { bg: "bg-purple-100", text: "text-purple-700" },
+  Art: { bg: "bg-red-100", text: "text-red-700" },
+  Geography: { bg: "bg-teal-100", text: "text-teal-700" },
+};
 
 const CreateModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+
+  const toggleTopic = (topic: string) => {
+    if (selectedTopics.includes(topic)) {
+      setSelectedTopics(selectedTopics.filter((t) => t !== topic));
+    } else {
+      setSelectedTopics([...selectedTopics, topic]);
+    }
+  };
 
   const handleSave = () => {
-    const newFlashcard = { question, answer };
+    const newFlashcard = { question, answer, topics: selectedTopics };
     // TO DO: guardar en local storage
     console.log("New flashcard:", newFlashcard);
     setQuestion("");
@@ -49,6 +81,57 @@ const CreateModal = () => {
               />
             </div>
 
+            <div className="mb-4">
+              <label className="block text-gray-700 mb-2">Topics</label>
+              <div className="flex flex-wrap gap-2">
+                {availableTopics.map((topic) => {
+                  const selected = selectedTopics.includes(topic);
+                  const color = topicColors[topic] || {
+                    bg: "bg-gray-200",
+                    text: "text-gray-700",
+                  };
+
+                  return (
+                    <button
+                      key={topic}
+                      type="button"
+                      onClick={() => toggleTopic(topic)}
+                      className={`px-3 py-1 rounded-full border transition ${
+                        selected
+                          ? `${color.bg} ${color.text} border-transparent`
+                          : "bg-gray-200 text-gray-700 border-gray-200 hover:bg-gray-300"
+                      }`}
+                    >
+                      {topic}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Topics seleccionados */}
+            {selectedTopics.length > 0 && (
+              <div className="mb-4">
+                <p className="text-gray-700 mb-1">Selected Topics:</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedTopics.map((t) => {
+                    const color = topicColors[t] || {
+                      bg: "bg-gray-200",
+                      text: "text-gray-700",
+                    };
+                    return (
+                      <span
+                        key={t}
+                        className={`px-2 py-1 rounded-full flex items-center gap-1 ${color.bg} ${color.text}`}
+                      >
+                        {t}
+                        <button onClick={() => toggleTopic(t)}>×</button>
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-end gap-4 mt-4">
               <button
