@@ -25,7 +25,10 @@ export const topicColors: Record<string, { bg: string; text: string }> = {
   Geography: { bg: "bg-teal-100", text: "text-teal-700" },
 };
 
-const CreateModal = () => {
+type CreateModalProps = {
+    onAdd: (fc: Flashcard) => void;
+}
+const CreateModal = ({onAdd} : CreateModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -50,7 +53,6 @@ const CreateModal = () => {
       status: Status.NOT_REVIEWED,
     };
 
-    // Guardar en localStorage
     const storedFlashcards =
       JSON.parse(localStorage.getItem("flashcards") || "[]") as Flashcard[];
     localStorage.setItem(
@@ -58,6 +60,7 @@ const CreateModal = () => {
       JSON.stringify([...storedFlashcards, newFlashcard])
     );
 
+    onAdd(newFlashcard);
     console.log("New flashcard:", newFlashcard);
     setQuestion("");
     setAnswer("");
