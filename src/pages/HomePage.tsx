@@ -17,20 +17,17 @@ const HomePage = () => {
     localStorage.setItem("flashcards", JSON.stringify(updated));
   };
 
-  if (flashcards.length === 0) {
-    return ;
-  }
-
   return (
     <div>
       <h1 className="text-4xl text-center font-bold">Study App</h1>
-      {flashcards .length === 0 ? <p className="text-center text-gray-500 mt-10">No flashcards created yet.</p>: 
-      <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {flashcards.map((fc) => (
-        <FlashcardComponent {...fc}/>
-      ))}</div>
+      {flashcards.length === 0 ? <p className="text-center text-gray-500 mt-10">No flashcards created yet.</p> :
+        <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {flashcards.map((fc) => (
+            <FlashcardComponent {...fc} />
+          ))}
+        </div>
       }
-      <CreateModal onAdd={addFlashcard}/>
+      <CreateModal onAdd={addFlashcard} />
     </div>
   );
 };

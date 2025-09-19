@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Status, type Flashcard } from "../types/flashcard";
-// can a flashcard have more than one topic?
-// can a status be "not reviewed"?
-// how to manage create edit modal?
-// can it be created more topics or just predefined?
+import { useForm } from "react-hook-form";
 
 const availableTopics = [
   "Math",
@@ -26,29 +23,39 @@ export const topicColors: Record<string, { bg: string; text: string }> = {
 };
 
 type CreateModalProps = {
-    onAdd: (fc: Flashcard) => void;
+  onAdd: (fc: Flashcard) => void;
+};
+
+interface IDataInput {
+  question: string;
+  answer: string;
 }
-const CreateModal = ({onAdd} : CreateModalProps) => {
+
+const CreateModal = ({ onAdd }: CreateModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<IDataInput>();
 
   const generateId = () => Date.now() + Math.floor(Math.random() * 1000);
 
   const toggleTopic = (topic: string) => {
-    if (selectedTopics.includes(topic)) {
-      setSelectedTopics(selectedTopics.filter((t) => t !== topic));
-    } else {
-      setSelectedTopics([...selectedTopics, topic]);
-    }
+    setSelectedTopics((prev) =>
+      prev.includes(topic)
+        ? prev.filter((t) => t !== topic)
+        : [...prev, topic]
+    );
   };
 
-  const handleSave = () => {
+  const onSubmit = (data: IDataInput) => {
     const newFlashcard: Flashcard = {
       id: generateId(),
-      question,
-      answer,
+      question: data.question,
+      answer: data.answer,
       topics: selectedTopics,
       status: Status.NOT_REVIEWED,
     };
@@ -61,9 +68,8 @@ const CreateModal = ({onAdd} : CreateModalProps) => {
     );
 
     onAdd(newFlashcard);
-    console.log("New flashcard:", newFlashcard);
-    setQuestion("");
-    setAnswer("");
+    reset();
+    setSelectedTopics([]);
     setIsOpen(false);
   };
 
@@ -82,91 +88,109 @@ const CreateModal = ({onAdd} : CreateModalProps) => {
           <div className="bg-white rounded-xl w-96 p-6 relative shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Create Flashcard</h2>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-1">Question</label>
-              <input
-                type="text"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-1">Answer</label>
-              <textarea
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Topics</label>
-              <div className="flex flex-wrap gap-2">
-                {availableTopics.map((topic) => {
-                  const selected = selectedTopics.includes(topic);
-                  const color = topicColors[topic] || {
-                    bg: "bg-gray-200",
-                    text: "text-gray-700",
-                  };
-
-                  return (
-                    <button
-                      key={topic}
-                      type="button"
-                      onClick={() => toggleTopic(topic)}
-                      className={`px-3 py-1 rounded-full border transition ${
-                        selected
-                          ? `${color.bg} ${color.text} border-transparent`
-                          : "bg-gray-200 text-gray-700 border-gray-200 hover:bg-gray-300"
-                      }`}
-                    >
-                      {topic}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Topics seleccionados */}
-            {selectedTopics.length > 0 && (
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
-                <p className="text-gray-700 mb-1">Selected Topics:</p>
+                <label className="block text-gray-700 mb-1">Question</label>
+                <input
+                  type="text"
+                  {...register("question", { required: true, minLength: 5 })}
+                  className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                    errors.question ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.question && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Question must be at least 5 characters.
+                  </p>
+                )}
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-1">Answer</label>
+                <textarea
+                  {...register("answer", { required: true, minLength: 10 })}
+                  className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                    errors.answer ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.answer && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Answer must be at least 10 characters.
+                  </p>
+                )}
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Topics</label>
                 <div className="flex flex-wrap gap-2">
-                  {selectedTopics.map((t) => {
-                    const color = topicColors[t] || {
+                  {availableTopics.map((topic) => {
+                    const selected = selectedTopics.includes(topic);
+                    const color = topicColors[topic] || {
                       bg: "bg-gray-200",
                       text: "text-gray-700",
                     };
+
                     return (
-                      <span
-                        key={t}
-                        className={`px-2 py-1 rounded-full flex items-center gap-1 ${color.bg} ${color.text}`}
+                      <button
+                        key={topic}
+                        type="button"
+                        onClick={() => toggleTopic(topic)}
+                        className={`px-3 py-1 rounded-full border transition ${
+                          selected
+                            ? `${color.bg} ${color.text} border-transparent`
+                            : "bg-gray-200 text-gray-700 border-gray-200 hover:bg-gray-300"
+                        }`}
                       >
-                        {t}
-                        <button onClick={() => toggleTopic(t)}>×</button>
-                      </span>
+                        {topic}
+                      </button>
                     );
                   })}
                 </div>
               </div>
-            )}
 
-            <div className="flex justify-end gap-4 mt-4">
-              <button
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 rounded-md bg-amber-500 text-white hover:bg-amber-600 transition"
-              >
-                Save
-              </button>
-            </div>
+              {selectedTopics.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-gray-700 mb-1">Selected Topics:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTopics.map((t) => {
+                      const color = topicColors[t] || {
+                        bg: "bg-gray-200",
+                        text: "text-gray-700",
+                      };
+                      return (
+                        <span
+                          key={t}
+                          className={`px-2 py-1 rounded-full flex items-center gap-1 ${color.bg} ${color.text}`}
+                        >
+                          {t}
+                          <button onClick={() => toggleTopic(t)}>×</button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-4 mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    reset();
+                    setSelectedTopics([]);
+                  }}
+                  className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-md bg-amber-500 text-white hover:bg-amber-600 transition"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
