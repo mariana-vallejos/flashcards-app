@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Status, type Flashcard } from "../types/flashcard";
 // can a flashcard have more than one topic?
 // can a status be "not reviewed"?
 // how to manage create edit modal?
@@ -30,6 +31,8 @@ const CreateModal = () => {
   const [answer, setAnswer] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
+  const generateId = () => Date.now() + Math.floor(Math.random() * 1000);
+  
   const toggleTopic = (topic: string) => {
     if (selectedTopics.includes(topic)) {
       setSelectedTopics(selectedTopics.filter((t) => t !== topic));
@@ -39,8 +42,22 @@ const CreateModal = () => {
   };
 
   const handleSave = () => {
-    const newFlashcard = { question, answer, topics: selectedTopics };
-    // TO DO: guardar en local storage
+    const newFlashcard: Flashcard = {
+      id: generateId(),
+      question,
+      answer,
+      topics: selectedTopics,
+      status: Status.NOT_REVIEWED,
+    };
+
+    // Guardar en localStorage
+    const storedFlashcards =
+      JSON.parse(localStorage.getItem("flashcards") || "[]") as Flashcard[];
+    localStorage.setItem(
+      "flashcards",
+      JSON.stringify([...storedFlashcards, newFlashcard])
+    );
+
     console.log("New flashcard:", newFlashcard);
     setQuestion("");
     setAnswer("");
