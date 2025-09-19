@@ -1,5 +1,5 @@
 import { Status, type Flashcard } from "../types/flashcard";
-import { topicColors } from "./CreateModal";
+import { topicColors } from "../types/topics";
 
 const FlashcardComponent = (flashcard: Flashcard) => {
   return (
