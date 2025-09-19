@@ -15,7 +15,7 @@ const availableTopics = [
   "Geography",
 ];
 
-const topicColors: Record<string, { bg: string; text: string }> = {
+export const topicColors: Record<string, { bg: string; text: string }> = {
   Math: { bg: "bg-blue-100", text: "text-blue-700" },
   Science: { bg: "bg-green-100", text: "text-green-700" },
   History: { bg: "bg-yellow-100", text: "text-yellow-700" },
@@ -32,7 +32,7 @@ const CreateModal = () => {
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   const generateId = () => Date.now() + Math.floor(Math.random() * 1000);
-  
+
   const toggleTopic = (topic: string) => {
     if (selectedTopics.includes(topic)) {
       setSelectedTopics(selectedTopics.filter((t) => t !== topic));
