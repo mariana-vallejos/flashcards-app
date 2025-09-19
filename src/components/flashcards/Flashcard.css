@@ -1,0 +1,4 @@
+.flashcard-bg {
+  background-size: 15px 20px;
+  background-image: radial-gradient(circle, rgb(186, 185, 185) 1px, rgba(255, 255, 255, 0.2) 1px);
+}

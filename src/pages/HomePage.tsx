@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CreateModal from "../components/CreateModal";
 import type { Flashcard } from "../types/flashcard";
-import FlashcardComponent from "../components/Flashcard";
+import FlashcardComponent from "../components/flashcards/Flashcard";
 
 const HomePage = () => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
