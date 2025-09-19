@@ -1,17 +1,15 @@
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import CreateModal from './components/CreateModal'
-import FlashcardList from './components/FlashcardsList'
-
-
+import HomePage from './pages/HomePage'
+import StudyModePage from './pages/StudyModePage'
 
 function App() {
 
   return (
-    <>
-      <h1 className='text-4xl text-center font-bold'>Study App</h1>
-      <CreateModal/>
-      <FlashcardList/>
-    </>
+    <Routes>
+      <Route path='/' element={<HomePage/>} />
+      <Route path='/study-mode' element={<StudyModePage/>} />
+    </Routes>
   )
 }
 
