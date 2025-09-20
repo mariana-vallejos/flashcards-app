@@ -3,6 +3,7 @@ import CreateEditModal from "../components/CreateEditModal";
 import FlashcardComponent from "../components/flashcards/Flashcard";
 import { useFlashcards } from "../context/FlashcardsContext";
 import DeleteModal from "../components/DeleteModal";
+import SearchAndFilterBar from "../components/SearchFilterBar";
 
 const HomePage = () => {
   const { flashcards, deleteFlashcard } = useFlashcards();
@@ -10,6 +11,20 @@ const HomePage = () => {
   const [selectedFlashcard, setSelectedFlashcard] = useState<number | null>();
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+
+  const filteredFlashcards = flashcards.filter((f) => {
+    const matchesSearch =
+      f.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      f.answer.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesTopic = selectedTopic
+      ? f.topics.includes(selectedTopic)
+      : true;
+
+    return matchesSearch && matchesTopic;
+  });
 
   const handleEdit = (id: number) => {
     setSelectedFlashcard(id);
@@ -29,15 +44,24 @@ const HomePage = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-4xl text-center font-bold">Study App</h1>
-      {flashcards.length === 0 ? (
+    <main className="p-4">
+      <h1 className="text-4xl text-center font-bold py-3">Study App</h1>
+      <div className="mb-6">
+        <SearchAndFilterBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedTopic={selectedTopic}
+          setSelectedTopic={setSelectedTopic}
+        />
+      </div>
+
+      {filteredFlashcards.length === 0 ? (
         <p className="text-center text-gray-500 mt-10">
-          No flashcards created yet.
+          No flashcards.
         </p>
       ) : (
-        <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {flashcards.map((fc) => (
+        <section className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredFlashcards.map((fc) => (
             <FlashcardComponent
               flashcard={fc}
               onEdit={() => handleEdit(fc.id)}
@@ -45,7 +69,7 @@ const HomePage = () => {
               key={fc.id}
             />
           ))}
-        </div>
+        </section>
       )}
       <button
         onClick={() => setIsModalOpen(true)}
@@ -69,7 +93,7 @@ const HomePage = () => {
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={confirmDelete}
       />
-    </div>
+    </main>
   );
 };
 
