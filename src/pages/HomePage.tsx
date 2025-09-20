@@ -2,11 +2,31 @@ import { useState } from "react";
 import CreateEditModal from "../components/CreateEditModal";
 import FlashcardComponent from "../components/flashcards/Flashcard";
 import { useFlashcards } from "../context/FlashcardsContext";
+import DeleteModal from "../components/DeleteModal";
 
 const HomePage = () => {
-  const { flashcards } = useFlashcards();
+  const { flashcards, deleteFlashcard } = useFlashcards();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFlashcard, setSelectedFlashcard] = useState<number | null>();
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const handleEdit = (id: number) => {
+    setSelectedFlashcard(id);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id: number) => {
+    setDeleteId(id);
+    setIsDeleteOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (deleteId !== null) {
+      deleteFlashcard(deleteId);
+      setDeleteId(null);
+    }
+  };
 
   return (
     <div>
@@ -20,10 +40,8 @@ const HomePage = () => {
           {flashcards.map((fc) => (
             <FlashcardComponent
               flashcard={fc}
-              onEdit={() => {
-                setIsModalOpen(true);
-                setSelectedFlashcard(fc.id);
-              }}
+              onEdit={() => handleEdit(fc.id)}
+              onDelete={handleDelete}
               key={fc.id}
             />
           ))}
@@ -36,6 +54,7 @@ const HomePage = () => {
       >
         +
       </button>
+
       <CreateEditModal
         isOpen={isModalOpen}
         onClose={() => {
@@ -43,6 +62,12 @@ const HomePage = () => {
           setSelectedFlashcard(null);
         }}
         flashcardId={selectedFlashcard ?? undefined}
+      />
+
+      <DeleteModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={confirmDelete}
       />
     </div>
   );
