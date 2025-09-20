@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Status, type Flashcard } from "../types/flashcard";
 import { useForm } from "react-hook-form";
 import { availableTopics, topicColors } from "../types/topics";
+import { useFlashcards } from "../context/FlashcardsContext";
 
 type CreateModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (fc: Flashcard) => void;
 };
 
 interface IDataInput {
@@ -14,7 +14,8 @@ interface IDataInput {
   answer: string;
 }
 
-const CreateModal = ({ isOpen, onClose, onAdd }: CreateModalProps) => {
+const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
+  const { addFlashcard } = useFlashcards();
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const {
     register,
@@ -42,14 +43,8 @@ const CreateModal = ({ isOpen, onClose, onAdd }: CreateModalProps) => {
       status: Status.NOT_REVIEWED,
     };
 
-    const storedFlashcards =
-      JSON.parse(localStorage.getItem("flashcards") || "[]") as Flashcard[];
-    localStorage.setItem(
-      "flashcards",
-      JSON.stringify([...storedFlashcards, newFlashcard])
-    );
+    addFlashcard(newFlashcard)
 
-    onAdd(newFlashcard);
     reset();
     setSelectedTopics([]);
     onClose();

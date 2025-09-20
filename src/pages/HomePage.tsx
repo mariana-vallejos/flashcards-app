@@ -1,24 +1,11 @@
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import CreateModal from "../components/CreateModal";
-import type { Flashcard } from "../types/flashcard";
 import FlashcardComponent from "../components/flashcards/Flashcard";
+import { useFlashcards } from "../context/FlashcardsContext";
 
 const HomePage = () => {
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const {flashcards} = useFlashcards()
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    const stored = JSON.parse(
-      localStorage.getItem("flashcards") || "[]"
-    ) as Flashcard[];
-    setFlashcards(stored);
-  }, []);
-
-  const addFlashcard = (fc: Flashcard) => {
-    const updated = [...flashcards, fc];
-    setFlashcards(updated);
-    localStorage.setItem("flashcards", JSON.stringify(updated));
-  };
 
   return (
     <div>
@@ -30,7 +17,7 @@ const HomePage = () => {
       ) : (
         <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {flashcards.map((fc) => (
-            <FlashcardComponent {...fc} />
+            <FlashcardComponent {...fc} key={fc.id}/>
           ))}
         </div>
       )}
@@ -42,7 +29,6 @@ const HomePage = () => {
         +
       </button>
       <CreateModal
-        onAdd={addFlashcard}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
