@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Status, type Flashcard } from "../types/flashcard";
 import { useForm } from "react-hook-form";
 import { availableTopics, topicColors } from "../types/topics";
@@ -7,6 +7,7 @@ import { useFlashcards } from "../context/FlashcardsContext";
 type CreateModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  flashcardId?: number | null
 };
 
 interface IDataInput {
@@ -14,13 +15,14 @@ interface IDataInput {
   answer: string;
 }
 
-const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
-  const { addFlashcard } = useFlashcards();
+const CreateEditModal = ({ isOpen, onClose, flashcardId}: CreateModalProps) => {
+  const { flashcards, addFlashcard, updateFlashcard } = useFlashcards();
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<IDataInput>();
 
@@ -35,20 +37,41 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
   };
 
   const onSubmit = (data: IDataInput) => {
-    const newFlashcard: Flashcard = {
-      id: generateId(),
-      question: data.question,
-      answer: data.answer,
-      topics: selectedTopics,
-      status: Status.NOT_REVIEWED,
-    };
-
-    addFlashcard(newFlashcard)
+    // TO DO: validate that at least a topic should be added
+    if (flashcardId) {
+      updateFlashcard(flashcardId, {
+        ...data,
+        topics: selectedTopics,
+      });
+    } else {
+      const newFlashcard: Flashcard = {
+        id: generateId(),
+        question: data.question,
+        answer: data.answer,
+        topics: selectedTopics,
+        status: Status.NOT_REVIEWED,
+      };
+      addFlashcard(newFlashcard);
+    }
 
     reset();
     setSelectedTopics([]);
     onClose();
   };
+
+  useEffect(() => {
+    if (flashcardId) {
+      const cardToEdit = flashcards.find((f) => f.id === flashcardId);
+      if (cardToEdit) {
+        setValue("question", cardToEdit.question);
+        setValue("answer", cardToEdit.answer);
+        setSelectedTopics(cardToEdit.topics || []);
+      }
+    } else {
+      reset();
+      setSelectedTopics([]);
+    }
+  }, [flashcardId, flashcards, setValue, reset]);
 
   if (!isOpen) return null;
 
@@ -143,10 +166,11 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
           <div className="flex justify-end gap-4 mt-4">
             <button
               type="button"
-              onClick={() => {
+              onClick={(e) => {
                 onClose();
                 reset();
                 setSelectedTopics([]);
+                e.stopPropagation()
               }}
               className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition"
             >
@@ -156,7 +180,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
               type="submit"
               className="px-4 py-2 rounded-md bg-amber-500 text-white hover:bg-amber-600 transition"
             >
-              Save
+              {flashcardId ? "Update" : "Save"}
             </button>
           </div>
         </form>
@@ -165,4 +189,4 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
   );
 };
 
-export default CreateModal;
+export default CreateEditModal;

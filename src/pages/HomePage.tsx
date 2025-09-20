@@ -1,11 +1,12 @@
-import {useState } from "react";
-import CreateModal from "../components/CreateModal";
+import { useState } from "react";
+import CreateEditModal from "../components/CreateEditModal";
 import FlashcardComponent from "../components/flashcards/Flashcard";
 import { useFlashcards } from "../context/FlashcardsContext";
 
 const HomePage = () => {
-  const {flashcards} = useFlashcards()
+  const { flashcards } = useFlashcards();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFlashcard, setSelectedFlashcard] = useState<number | null>();
 
   return (
     <div>
@@ -17,7 +18,14 @@ const HomePage = () => {
       ) : (
         <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {flashcards.map((fc) => (
-            <FlashcardComponent {...fc} key={fc.id}/>
+            <FlashcardComponent
+              flashcard={fc}
+              onEdit={() => {
+                setIsModalOpen(true);
+                setSelectedFlashcard(fc.id);
+              }}
+              key={fc.id}
+            />
           ))}
         </div>
       )}
@@ -28,9 +36,13 @@ const HomePage = () => {
       >
         +
       </button>
-      <CreateModal
+      <CreateEditModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedFlashcard(null);
+        }}
+        flashcardId={selectedFlashcard ?? undefined}
       />
     </div>
   );

@@ -7,11 +7,11 @@ import { AiOutlineDelete } from "react-icons/ai";
 
 type Props = {
   flashcard: Flashcard;
-  onEdit?: (fc: Flashcard) => void;
+  onEdit?: (id:number) => void;
   onDelete?: (id: number) => void;
 };
 
-const FlashcardComponent = ( flashcard: Flashcard) => {
+const FlashcardComponent = ({flashcard, onEdit, onDelete} : Props) => {
   const [flipped, setFlipped] = useState(false);
 
   return (
@@ -31,15 +31,18 @@ const FlashcardComponent = ( flashcard: Flashcard) => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
+                onEdit?.(flashcard.id)
               }}
               className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
               title="Editar"
             >
               <MdOutlineEdit />
             </button>
+
             <button
               onClick={(e) => {
                 e.stopPropagation();
+                onDelete?.(flashcard.id)
               }}
               className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition"
               title="Eliminar"
