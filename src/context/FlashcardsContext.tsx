@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import { type Flashcard } from "../types/flashcard";
 
 type FlashcardsContextType = {
@@ -9,15 +15,15 @@ type FlashcardsContextType = {
   clearAll: () => void;
 };
 
-const FlashcardsContext = createContext<FlashcardsContextType | undefined>(undefined);
+const FlashcardsContext = createContext<FlashcardsContextType | undefined>(
+  undefined
+);
 
 export const FlashcardsProvider = ({ children }: { children: ReactNode }) => {
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
-
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("flashcards") || "[]") as Flashcard[];
-    setFlashcards(stored);
-  }, []);
+  const [flashcards, setFlashcards] = useState<Flashcard[]>(() => {
+    const stored = localStorage.getItem("flashcards");
+    return stored ? (JSON.parse(stored) as Flashcard[]) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem("flashcards", JSON.stringify(flashcards));
@@ -43,7 +49,13 @@ export const FlashcardsProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <FlashcardsContext.Provider
-      value={{ flashcards, addFlashcard, updateFlashcard, deleteFlashcard, clearAll }}
+      value={{
+        flashcards,
+        addFlashcard,
+        updateFlashcard,
+        deleteFlashcard,
+        clearAll,
+      }}
     >
       {children}
     </FlashcardsContext.Provider>
