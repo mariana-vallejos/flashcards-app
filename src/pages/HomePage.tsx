@@ -2,16 +2,15 @@ import { useState } from "react";
 import { useFlashcards } from "../context/FlashcardsContext";
 import SearchAndFilterBar from "../components/SearchFilterBar";
 import CircularProgress from "../components/CircularProgress";
-import { Status } from "../types/flashcard";
 import FlashcardsList from "../components/flashcards/FlashcardsList";
+import { formatDateTo_dd_mm_yyyy } from "../utils/formatDate";
 
 const HomePage = () => {
-  const { flashcards } = useFlashcards();
+  const { flashcards, studyProgress } = useFlashcards();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
   const total = flashcards.length;
-  const learned = flashcards.filter((f) => f.status === Status.LEARNED).length;
 
   const filteredFlashcards = flashcards.filter((f) => {
     const matchesSearch =
@@ -29,7 +28,14 @@ const HomePage = () => {
     <main className="p-4 md:flex h-screen">
       <div className="md:w-1/4">
         <h1 className="text-4xl text-center font-bold py-3">Study App</h1>
-        <CircularProgress total={total} learned={learned} />
+        <div className="h-2/5">
+          <CircularProgress total={total} learned={studyProgress.learned} />
+        </div>
+        <section className="pt-4 px-6 text-center text-gray-700 font-normal">
+          <p className="">{studyProgress.toReview} para repasar</p>
+          <p>{studyProgress.notReviewed} sin revisar</p>
+          <p>Última sesión: {formatDateTo_dd_mm_yyyy(studyProgress?.lastStudiedAt || new Date())}</p>
+        </section>
       </div>
       <div className="md:w-3/4">
         <div className="">
@@ -44,9 +50,8 @@ const HomePage = () => {
         {filteredFlashcards.length === 0 ? (
           <p className="text-center text-gray-500 mt-10">No flashcards.</p>
         ) : (
-          <FlashcardsList flashcards={filteredFlashcards}/>
+          <FlashcardsList flashcards={filteredFlashcards} />
         )}
-        
       </div>
     </main>
   );
