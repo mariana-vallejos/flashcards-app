@@ -1,33 +1,33 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFlashcards } from "../context/FlashcardsContext";
-import { Status, type Flashcard } from "../types/flashcard";
+import { Status } from "../types/flashcard";
 import FlashcardComponent from "../components/flashcards/Flashcard";
 import StudyProgressBar from "../components/StudyProgressBar";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
-import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { IoMdArrowBack } from "react-icons/io";
 
 const StudyModePage = () => {
   const { flashcards, updateFlashcard } = useFlashcards();
-  const [studyOrder, setStudyOrder] = useState<Flashcard[]>(flashcards);
+  const navigate = useNavigate()
+
+  const [indices, setIndices] = useState<number[]>(flashcards.map((_, i) => i));
   const [currentIndex, setCurrentIndex] = useState(0);
-  const navigate = useNavigate();
 
-  const total = studyOrder.length;
-  const current = studyOrder[currentIndex];
+  const total = flashcards.length;
+  const current = flashcards[indices[currentIndex]];
 
-  const shuffleArray = <T,>(array: T[]): T[] => {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
+  const shuffleIndices = (arr: number[]) => {
+    const newArr = [...arr];
+    for (let i = newArr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
     }
-    return arr;
+    return newArr;
   };
 
   const shuffleFlashcards = () => {
-    const shuffled = shuffleArray(studyOrder);
-    setStudyOrder(shuffled);
+    setIndices(shuffleIndices(indices));
     setCurrentIndex(0);
   };
 
@@ -40,15 +40,11 @@ const StudyModePage = () => {
   };
 
   const markAs = (status: Status) => {
-    updateFlashcard(current.id, { ...current, status });
+    updateFlashcard(current.id, { status });
   };
 
-  useEffect(() => {
-    setStudyOrder(flashcards);
-  }, [flashcards]);
-
   return (
-    <div className="mx-40 my-10 p-6 rounded-2xl shadow-md relative">
+    <div className="mx-40 my-10 p-8 rounded-2xl shadow-md relative">
       <div className="flex justify-between mb-4">
         <button
           className="flex text-gray-600 items-center gap-2 hover:border-b-[1px]"
@@ -57,6 +53,7 @@ const StudyModePage = () => {
           <IoMdArrowBack />
           End session
         </button>
+
         <button
           onClick={shuffleFlashcards}
           className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition"
@@ -66,13 +63,22 @@ const StudyModePage = () => {
       </div>
 
       <StudyProgressBar
-        flashcards={studyOrder}
+        flashcards={flashcards}
         currentIndex={currentIndex}
         total={total}
       />
 
-      <div className="p-6 min-h-[120px] max-w-2/3 mx-auto">
-        <FlashcardComponent flashcard={current} />
+      <div className="overflow-hidden relative min-h-[270px] w-2/3 mx-auto">
+        <div
+          className="flex transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {indices.map((i) => (
+            <div key={flashcards[i].id} className="flex-none w-full px-4">
+              <FlashcardComponent flashcard={flashcards[i]} />
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="flex gap-4 justify-center mt-4">
@@ -93,14 +99,14 @@ const StudyModePage = () => {
       <button
         onClick={prevCard}
         disabled={currentIndex === 0}
-        className="px-4 py-2 rounded disabled:opacity-50 absolute top-1/2"
+        className="px-8 py-2 rounded disabled:opacity-50 absolute top-1/2 left-0 -translate-y-1/2"
       >
         <MdArrowBackIos size={30} />
       </button>
       <button
         onClick={nextCard}
         disabled={currentIndex === total - 1}
-        className="px-4 py-2 rounded disabled:opacity-50 absolute top-1/2 right-2"
+        className="px-8 py-2 rounded disabled:opacity-50 absolute top-1/2 right-0 -translate-y-1/2"
       >
         <MdArrowForwardIos size={30} />
       </button>
