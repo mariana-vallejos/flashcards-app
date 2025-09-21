@@ -16,7 +16,7 @@ const FlashcardComponent = ({ flashcard, onEdit, onDelete }: Props) => {
 
   return (
     <article
-      className="relative h-60  cursor-pointer perspective"
+      className="relative h-60 cursor-pointer perspective"
       onClick={() => setFlipped((prev) => !prev)}
     >
       <div
@@ -52,7 +52,7 @@ const FlashcardComponent = ({ flashcard, onEdit, onDelete }: Props) => {
             </div>
           )}
 
-          <div className="p-2 border-gray-800 border-[1.5px] rounded-sm h-30 flex items-center justify-center">
+          <div className="p-2 border-gray-800 border-[1.5px] rounded-sm h-30 flex items-center justify-center font-flashcard">
             <h3 className="text-xl font-semibold mx-2 break-words leading-tight line-clamp-3">{flashcard.question}</h3>
           </div>
 
@@ -89,7 +89,7 @@ const FlashcardComponent = ({ flashcard, onEdit, onDelete }: Props) => {
 
         {/* back */}
         <div className="absolute inset-0 bg-amber-50 rounded-xl shadow-lg p-6 flex items-center justify-center backface-hidden rotate-y-180">
-          <p className="text-lg text-gray-800">{flashcard.answer}</p>
+          <p className="text-lg font-flashcard text-gray-800">{flashcard.answer}</p>
         </div>
       </div>
     </article>

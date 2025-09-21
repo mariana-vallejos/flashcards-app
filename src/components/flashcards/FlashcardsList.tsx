@@ -35,7 +35,7 @@ const FlashcardsList = ({ flashcards }: FlashcardsListProps) => {
   };
 
   return (
-    <section className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section className="px-8 pb-8 pt-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {flashcards.map((fc) => (
         <FlashcardComponent
           flashcard={fc}
@@ -46,7 +46,7 @@ const FlashcardsList = ({ flashcards }: FlashcardsListProps) => {
       ))}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-8 right-8 bg-amber-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-lg hover:bg-amber-600 transition"
+        className="fixed bottom-8 right-8 bg-purple-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-lg hover:bg-purple-600 transition"
         title="Create Flashcard"
       >
         +

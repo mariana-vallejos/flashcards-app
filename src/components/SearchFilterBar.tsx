@@ -23,7 +23,7 @@ const SearchAndFilterBar = ({
       <select
         value={selectedTopic || ""}
         onChange={(e) => setSelectedTopic(e.target.value || null)}
-        className="border px-4 py-2 rounded-md w-full lg:w-1/5 focus:outline-none focus:ring-2 focus:ring-amber-400"
+        className="z-50 border px-4 bg-white border-purple-50 shadow-md shadow-blue-200  py-2 rounded-md w-full lg:w-1/5 focus:outline-none focus:ring-2 focus:ring-purple-400"
       >
         <option value="">All topics</option>
         {availableTopics.map((topic) => (
@@ -38,7 +38,7 @@ const SearchAndFilterBar = ({
         placeholder="Search by question or answer..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border px-4 py-2 rounded-md w-full lg:w-1/4 focus:outline-none focus:ring-2 focus:ring-amber-400"
+        className="bg-white border border-purple-50 shadow-md shadow-blue-200 px-4 py-2 rounded-md w-full lg:w-1/4 focus:outline-none focus:ring-2 focus:ring-purple-400"
       />
 
       {(searchTerm || selectedTopic) && (

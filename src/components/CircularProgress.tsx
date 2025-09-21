@@ -16,9 +16,8 @@ const CircularProgress = ({ learned, total }: CircularProgressProps) => {
     <div className="flex justify-center gap-3 pt-10">
       <div className="md:absolute flex flex-col items-center">
         <svg width={size} height={size} className="transform -rotate-90">
-          {/* Fondo gris */}
           <circle
-            stroke="#e5e7eb" // gris claro
+            stroke="#e5e7eb"
             fill="transparent"
             strokeWidth={strokeWidth}
             r={radius}
@@ -27,7 +26,7 @@ const CircularProgress = ({ learned, total }: CircularProgressProps) => {
           />
           {/* Barra de progreso */}
           <circle
-            stroke="#f59e0b" // amber-500
+            stroke="purple"
             fill="transparent"
             strokeWidth={strokeWidth}
             strokeLinecap="round"

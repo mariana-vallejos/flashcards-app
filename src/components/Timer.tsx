@@ -26,7 +26,7 @@ const Timer = ({ maxTime }: Props) => {
     };
   }, [isRunning, time]);
   return (
-    <div className="flex gap-3 justify-center">
+    <div className="flex gap-3 justify-center pb-2">
       <div className="text-lg font-mono text-gray-700">
         Time left:{" "}
         <span
@@ -35,7 +35,7 @@ const Timer = ({ maxTime }: Props) => {
           {formatTime(time)}
         </span>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 my-auto">
         <button
           onClick={() => setIsRunning((prev) => !prev)}
           className="px-3 py-1 border-2 border-blue-500 text-blue-500 rounded hover:bg-blue-100"

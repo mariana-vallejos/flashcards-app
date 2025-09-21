@@ -94,7 +94,7 @@ const CreateEditModal = ({
             <input
               type="text"
               {...register("question", { required: true, minLength: 5 })}
-              className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+              className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 ${
                 errors.question ? "border-red-500" : "border-gray-300"
               }`}
             />
@@ -109,7 +109,7 @@ const CreateEditModal = ({
             <label className="block text-gray-700 mb-1">Answer</label>
             <textarea
               {...register("answer", { required: true, minLength: 10 })}
-              className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+              className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 ${
                 errors.answer ? "border-red-500" : "border-gray-300"
               }`}
             />
@@ -192,7 +192,7 @@ const CreateEditModal = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-md bg-amber-500 text-white hover:bg-amber-600 transition"
+              className="px-4 py-2 rounded-md bg-purple-500 text-white hover:bg-purple-600 transition"
             >
               {flashcardId ? "Update" : "Save"}
             </button>
