@@ -6,10 +6,11 @@ import StudyProgressBar from "../components/StudyProgressBar";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
+import Timer from "../components/Timer";
 
 const StudyModePage = () => {
   const { flashcards, updateFlashcard } = useFlashcards();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [indices, setIndices] = useState<number[]>(flashcards.map((_, i) => i));
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,10 +45,11 @@ const StudyModePage = () => {
   };
 
   return (
-    <div className="mx-40 my-10 p-8 rounded-2xl shadow-md relative">
+    <div className="mx-5 lg:mx-40 my-10 p-8 rounded-2xl shadow-md relative">
+      <Timer maxTime={15 * 60} />
       <div className="flex justify-between mb-4">
         <button
-          className="flex text-gray-600 items-center gap-2 hover:border-b-[1px]"
+          className="flex text-gray-600 items-center md:gap-2 hover:border-b-[1px]"
           onClick={() => navigate("/")}
         >
           <IoMdArrowBack />
@@ -56,7 +58,7 @@ const StudyModePage = () => {
 
         <button
           onClick={shuffleFlashcards}
-          className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition"
+          className="px-4 py-2 bg-purple-500 text-white text-sm md:text-base rounded hover:bg-purple-600 transition"
         >
           Shuffle Flashcards
         </button>
@@ -68,7 +70,7 @@ const StudyModePage = () => {
         total={total}
       />
 
-      <div className="overflow-hidden relative min-h-[270px] w-2/3 mx-auto">
+      <div className="overflow-hidden relative min-h-[270px] md:w-2/3 mx-auto">
         <div
           className="flex transition-transform duration-300 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
