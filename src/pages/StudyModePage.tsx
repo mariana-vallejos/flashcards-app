@@ -46,7 +46,8 @@ const StudyModePage = () => {
 
   return (
     <div className="mx-5 lg:mx-40 my-10 p-8 rounded-2xl shadow-md relative">
-      <Timer maxTime={15 * 60} />
+      <Timer maxTime={2 * 60} />
+      
       <div className="flex justify-between mb-4">
         <button
           className="flex text-gray-600 items-center md:gap-2 hover:border-b-[1px]"

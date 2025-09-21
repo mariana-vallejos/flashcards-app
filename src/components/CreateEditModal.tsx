@@ -7,7 +7,7 @@ import { useFlashcards } from "../context/FlashcardsContext";
 type CreateModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  flashcardId?: number | null
+  flashcardId?: number | null;
 };
 
 interface IDataInput {
@@ -15,7 +15,11 @@ interface IDataInput {
   answer: string;
 }
 
-const CreateEditModal = ({ isOpen, onClose, flashcardId}: CreateModalProps) => {
+const CreateEditModal = ({
+  isOpen,
+  onClose,
+  flashcardId,
+}: CreateModalProps) => {
   const { flashcards, addFlashcard, updateFlashcard } = useFlashcards();
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const {
@@ -25,19 +29,23 @@ const CreateEditModal = ({ isOpen, onClose, flashcardId}: CreateModalProps) => {
     setValue,
     formState: { errors },
   } = useForm<IDataInput>();
+  const [topicError, setTopicError] = useState<string | null>(null);
 
   const generateId = () => Date.now() + Math.floor(Math.random() * 1000);
 
   const toggleTopic = (topic: string) => {
     setSelectedTopics((prev) =>
-      prev.includes(topic)
-        ? prev.filter((t) => t !== topic)
-        : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
     );
   };
 
   const onSubmit = (data: IDataInput) => {
-    // TO DO: validate that at least a topic should be added
+    if (selectedTopics.length === 0) {
+      setTopicError("Please select at least one topic.");
+      return;
+    }
+    setTopicError(null);
+
     if (flashcardId) {
       updateFlashcard(flashcardId, {
         ...data,
@@ -77,7 +85,7 @@ const CreateEditModal = ({ isOpen, onClose, flashcardId}: CreateModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-96 p-6 relative shadow-lg">
+      <div className="bg-white rounded-xl w-1/3 p-6 relative shadow-lg">
         <h2 className="text-2xl font-semibold mb-4">Create Flashcard</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -126,7 +134,9 @@ const CreateEditModal = ({ isOpen, onClose, flashcardId}: CreateModalProps) => {
                   <button
                     key={topic}
                     type="button"
-                    onClick={() => toggleTopic(topic)}
+                    onClick={() => {toggleTopic(topic)
+                      setTopicError(null)
+                    }}
                     className={`px-3 py-1 rounded-full border transition ${
                       selected
                         ? `${color.bg} ${color.text} border-transparent`
@@ -138,6 +148,9 @@ const CreateEditModal = ({ isOpen, onClose, flashcardId}: CreateModalProps) => {
                 );
               })}
             </div>
+            {topicError && (
+              <p className="text-red-500 text-sm mt-1">{topicError}</p>
+            )}
           </div>
 
           {selectedTopics.length > 0 && (
@@ -170,7 +183,8 @@ const CreateEditModal = ({ isOpen, onClose, flashcardId}: CreateModalProps) => {
                 onClose();
                 reset();
                 setSelectedTopics([]);
-                e.stopPropagation()
+                setTopicError(null)
+                e.stopPropagation();
               }}
               className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition"
             >

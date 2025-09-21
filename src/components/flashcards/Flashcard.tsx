@@ -24,7 +24,7 @@ const FlashcardComponent = ({ flashcard, onEdit, onDelete }: Props) => {
           flipped ? "rotate-y-180" : ""
         }`}
       >
-        {/* Cara frontal */}
+        {/* front */}
         <div className="absolute inset-0 bg-white flashcard-bg rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-xl transition group backface-hidden">
           {onEdit && onDelete && (
             <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -53,7 +53,7 @@ const FlashcardComponent = ({ flashcard, onEdit, onDelete }: Props) => {
           )}
 
           <div className="p-2 border-gray-800 border-[1.5px] rounded-sm h-30 flex items-center justify-center">
-            <h3 className="text-xl font-semibold mx-2">{flashcard.question}</h3>
+            <h3 className="text-xl font-semibold mx-2 break-words leading-tight line-clamp-3">{flashcard.question}</h3>
           </div>
 
           <div className="mt-4 flex items-center gap-3 justify-between">
@@ -87,7 +87,7 @@ const FlashcardComponent = ({ flashcard, onEdit, onDelete }: Props) => {
           </div>
         </div>
 
-        {/* Cara trasera */}
+        {/* back */}
         <div className="absolute inset-0 bg-amber-50 rounded-xl shadow-lg p-6 flex items-center justify-center backface-hidden rotate-y-180">
           <p className="text-lg text-gray-800">{flashcard.answer}</p>
         </div>
