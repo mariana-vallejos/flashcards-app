@@ -4,6 +4,7 @@ import SearchAndFilterBar from "../components/SearchFilterBar";
 import CircularProgress from "../components/CircularProgress";
 import FlashcardsList from "../components/flashcards/FlashcardsList";
 import { formatDateTo_dd_mm_yyyy } from "../utils/formatDate";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const { flashcards, studyProgress } = useFlashcards();
@@ -31,10 +32,21 @@ const HomePage = () => {
         <div className="h-2/5">
           <CircularProgress total={total} learned={studyProgress.learned} />
         </div>
-        <section className="pt-4 px-6 text-center text-gray-700 font-normal">
+        <section className="pt-0 md:pt-8 px-6 text-center text-gray-700 font-normal">
           <p className="">{studyProgress.toReview} para repasar</p>
           <p>{studyProgress.notReviewed} sin revisar</p>
-          <p>Última sesión: {formatDateTo_dd_mm_yyyy(studyProgress?.lastStudiedAt || new Date())}</p>
+          <p className="mb-7">
+            Última sesión:{" "}
+            {formatDateTo_dd_mm_yyyy(
+              studyProgress?.lastStudiedAt || new Date()
+            )}
+          </p>
+          <Link
+            to={"/study-mode"}
+            className="px-4 py-2 rounded-md bg-amber-500 text-white hover:bg-amber-600 transition"
+          >
+            Study Mode
+          </Link>
         </section>
       </div>
       <div className="md:w-3/4">
