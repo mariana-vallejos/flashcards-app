@@ -7,11 +7,11 @@ import { AiOutlineDelete } from "react-icons/ai";
 
 type Props = {
   flashcard: Flashcard;
-  onEdit?: (id:number) => void;
+  onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
 };
 
-const FlashcardComponent = ({flashcard, onEdit, onDelete} : Props) => {
+const FlashcardComponent = ({ flashcard, onEdit, onDelete }: Props) => {
   const [flipped, setFlipped] = useState(false);
 
   return (
@@ -26,30 +26,31 @@ const FlashcardComponent = ({flashcard, onEdit, onDelete} : Props) => {
       >
         {/* Cara frontal */}
         <div className="absolute inset-0 bg-white flashcard-bg rounded-xl shadow-lg p-6 flex flex-col justify-between hover:shadow-xl transition group backface-hidden">
+          {onEdit && onDelete && (
+            <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit?.(flashcard.id);
+                }}
+                className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
+                title="Editar"
+              >
+                <MdOutlineEdit />
+              </button>
 
-          <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit?.(flashcard.id)
-              }}
-              className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
-              title="Editar"
-            >
-              <MdOutlineEdit />
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete?.(flashcard.id)
-              }}
-              className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition"
-              title="Eliminar"
-            >
-              <AiOutlineDelete />
-            </button>
-          </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete?.(flashcard.id);
+                }}
+                className="p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition"
+                title="Eliminar"
+              >
+                <AiOutlineDelete />
+              </button>
+            </div>
+          )}
 
           <div className="p-2 border-gray-800 border-[1.5px] rounded-sm h-30 flex items-center justify-center">
             <h3 className="text-xl font-semibold mx-2">{flashcard.question}</h3>
