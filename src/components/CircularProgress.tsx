@@ -14,7 +14,7 @@ const CircularProgress = ({ learned, total }: CircularProgressProps) => {
 
   return (
     <div className="flex justify-center gap-3 pt-10">
-      <div className="md:absolute flex flex-col items-center">
+      <div className="md:absolute flex flex-col items-center relative">
         <svg width={size} height={size} className="transform -rotate-90">
           <circle
             stroke="#e5e7eb"

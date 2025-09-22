@@ -23,7 +23,7 @@ const SearchAndFilterBar = ({
       <select
         value={selectedTopic || ""}
         onChange={(e) => setSelectedTopic(e.target.value || null)}
-        className="z-50 border px-4 bg-white border-purple-50 shadow-md shadow-blue-200  py-2 rounded-md w-full lg:w-1/5 focus:outline-none focus:ring-2 focus:ring-purple-400"
+        className="border px-4 bg-white border-purple-50 shadow-md shadow-blue-200  py-2 rounded-md w-full lg:w-1/5 focus:outline-none focus:ring-2 focus:ring-purple-400"
       >
         <option value="">All topics</option>
         {availableTopics.map((topic) => (

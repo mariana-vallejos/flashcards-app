@@ -85,7 +85,7 @@ const CreateEditModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-1/3 p-6 relative shadow-lg">
+      <div className="bg-white rounded-xl md:w-1/3 p-6 relative shadow-lg">
         <h2 className="text-2xl font-semibold mb-4">Create Flashcard</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>
